@@ -8,6 +8,8 @@
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
 
+            var firstTime = true;
+
             $('#newmessage').submit(function(e) {
                 var message = $("#messageinput").val();
                 $.ajax({
@@ -24,13 +26,21 @@
             var longPoll = function() {
               return $.ajax({
                 type: "POST",
-                url: "/poll/" + "{{uid}}",
+                url: "/poll/{{uid}}",
                 async: true,
                 cache: false,
                 timeout: 100000,
                 success: function(data) {
-                  if (data.length > 0) {
-                      $("#messages").append($("<li>" + data + "</li>"))
+                  console.log(data);
+                  if (data.message.length > 0) {
+                      $("#messages").append($("<li>" + data.message + "</li>"));
+                  }
+                  if (data.user.length > 0) {
+                    if (!firstTime) {
+                      $('#userList').append($("<li>" + data.user + "</li>"));
+                    } else {
+                        firstTime = false;
+                    }
                   }
                   return longPoll();
                 },
@@ -44,7 +54,13 @@
     </script>
 </head>
 <body>
-    Messages:
+    <h2>Online Now:</h2>
+    <ul id="userList">
+        {% for user in users %}
+        <li>{{user}}</li>
+        {% endfor %}
+    </ul>
+    <h2>Messages:</h2>
     <ul id="messages">
         {% for message in messages %}
         <li>{{message}}</li>
