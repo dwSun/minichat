@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Micro gevent chatroom.
 # ----------------------
 # Make things as simple as possible, but not simpler.
@@ -27,7 +28,7 @@ class Room(object):
 
     def add(self, message):
         for user in self.users:
-            print user
+            print(user)
             user.queue.put_nowait({'message': message})
         self.messages.append(message)
 
@@ -69,7 +70,7 @@ def join(room, uid):
 
     active_room = rooms[room]
     active_room.subscribe(user)
-    print 'subscribe', active_room, user
+    print('subscribe', active_room, user)
 
     messages = active_room.backlog()
     room_users = [u.nick for u in active_room.users]
